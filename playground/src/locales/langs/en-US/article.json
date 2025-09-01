@@ -1,0 +1,21 @@
+{
+  "title": "Article Management",
+  "list": {
+    "title": "Article List"
+  },
+  "add": {
+    "title": "Add Article"
+  },
+  "edit": {
+    "title": "Edit Article"
+  },
+  "detail": {
+    "title": "Article Detail"
+  },
+  "category": {
+    "title": "Article Category"
+  },
+  "tag": {
+    "title": "Article Tag"
+  }
+}

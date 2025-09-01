@@ -1,0 +1,21 @@
+{
+  "title": "文章管理",
+  "list": {
+    "title": "文章列表"
+  },
+  "add": {
+    "title": "新增文章"
+  },
+  "edit": {
+    "title": "编辑文章"
+  },
+  "detail": {
+    "title": "文章详情"
+  },
+  "category": {
+    "title": "文章分类"
+  },
+  "tag": {
+    "title": "文章标签"
+  }
+}
