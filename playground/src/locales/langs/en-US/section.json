@@ -1,0 +1,15 @@
+{
+  "title": "Section Management",
+  "list": {
+    "title": "Section List"
+  },
+  "add": {
+    "title": "Add Section"
+  },
+  "edit": {
+    "title": "Edit Section"
+  },
+  "detail": {
+    "title": "Section Detail"
+  }
+}

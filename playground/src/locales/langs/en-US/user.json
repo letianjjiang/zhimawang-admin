@@ -1,0 +1,15 @@
+{
+  "title": "User Management",
+  "list": {
+    "title": "User List"
+  },
+  "add": {
+    "title": "Add User"
+  },
+  "edit": {
+    "title": "Edit User"
+  },
+  "detail": {
+    "title": "User Detail"
+  }
+}
