@@ -64,7 +64,7 @@ withDefaults(defineProps<Props>(), {
       <template v-if="!collapsed">
         <slot name="text">
           <span class="text-foreground truncate text-nowrap font-semibold">
-            知马网 后台管理系统
+            知马网
           </span>
         </slot>
       </template>
