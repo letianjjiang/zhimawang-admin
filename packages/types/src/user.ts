@@ -15,6 +15,26 @@ interface UserInfo extends BasicUserInfo {
    * accessToken
    */
   token: string;
+  /**
+   * 用户昵称（别名）
+   */
+  nickname?: string;
+  /**
+   * IP地址
+   */
+  ipAddress?: string;
+  /**
+   * 微信OpenID
+   */
+  wechatOpenid?: string;
+  /**
+   * 用户头像URL
+   */
+  userAvatar?: string;
+  /**
+   * 用户角色（单个角色）
+   */
+  role?: string;
 }
 
 export type { UserInfo };

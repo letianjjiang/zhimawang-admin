@@ -22,6 +22,22 @@ interface BasicUserInfo {
    * 用户名
    */
   username: string;
+  /**
+   * 用户昵称（别名）
+   */
+  nickname?: string;
+  /**
+   * IP地址
+   */
+  ipAddress?: string;
+  /**
+   * 微信OpenID
+   */
+  wechatOpenid?: string;
+  /**
+   * 用户头像URL
+   */
+  userAvatar?: string;
 }
 
 interface AccessState {

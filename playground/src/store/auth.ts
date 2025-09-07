@@ -34,11 +34,11 @@ export const useAuthStore = defineStore('auth', () => {
     let userInfo: null | UserInfo = null;
     try {
       loginLoading.value = true;
-      const { accessToken } = await loginApi(params);
+      const response = await loginApi(params);
 
-      // 如果成功获取到 accessToken
-      if (accessToken) {
-        accessStore.setAccessToken(accessToken);
+      // 如果成功获取到 token
+      if (response.token) {
+        accessStore.setAccessToken(response.token);
 
         // 获取用户信息并存储到 accessStore 中
         const [fetchUserInfoResult, accessCodes] = await Promise.all([
@@ -57,7 +57,7 @@ export const useAuthStore = defineStore('auth', () => {
           onSuccess
             ? await onSuccess?.()
             : await router.push(
-                userInfo.homePath || preferences.app.defaultHomePath,
+                userInfo?.homePath || preferences.app.defaultHomePath,
               );
         }
 
@@ -101,7 +101,24 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function fetchUserInfo() {
     let userInfo: null | UserInfo = null;
-    userInfo = await getUserInfoApi();
+    const response = await getUserInfoApi();
+    
+    // 将API返回的用户信息转换为系统需要的格式
+    userInfo = {
+      userId: response.userId?.toString() || '',
+      username: response.username || '',
+      realName: response.nickname || response.username || '',
+      avatar: response.userAvatar || '',
+      roles: response.role ? [response.role] : [],
+      nickname: response.nickname,
+      ipAddress: response.ipAddress,
+      wechatOpenid: response.wechatOpenid,
+      userAvatar: response.userAvatar,
+      desc: '',
+      homePath: preferences.app.defaultHomePath,
+      token: '',
+    };
+    
     userStore.setUserInfo(userInfo);
     return userInfo;
   }

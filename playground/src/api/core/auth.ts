@@ -9,7 +9,11 @@ export namespace AuthApi {
 
   /** 登录接口返回值 */
   export interface LoginResult {
-    accessToken: string;
+    token: string;
+    userId: number;
+    username: string;
+    role: string;
+    expiresIn: number;
   }
 
   export interface RefreshTokenResult {
@@ -22,7 +26,7 @@ export namespace AuthApi {
  * 登录
  */
 export async function loginApi(data: AuthApi.LoginParams) {
-  return requestClient.post<AuthApi.LoginResult>('/auth/login', data, {
+  return requestClient.post<AuthApi.LoginResult>('/api/user/login', data, {
     withCredentials: true,
   });
 }
@@ -32,7 +36,7 @@ export async function loginApi(data: AuthApi.LoginParams) {
  */
 export async function refreshTokenApi() {
   return baseRequestClient.post<AuthApi.RefreshTokenResult>(
-    '/auth/refresh',
+    '/api/auth/refresh',
     null,
     {
       withCredentials: true,
@@ -44,14 +48,16 @@ export async function refreshTokenApi() {
  * 退出登录
  */
 export async function logoutApi() {
-  return baseRequestClient.post('/auth/logout', null, {
+  return baseRequestClient.post('/api/user/logout', null, {
     withCredentials: true,
   });
 }
 
 /**
  * 获取用户权限码
+ * 注意：知马网API暂不支持权限码功能，返回空数组
  */
 export async function getAccessCodesApi() {
-  return requestClient.get<string[]>('/auth/codes');
+  // 知马网API暂不支持权限码功能，返回空数组
+  return Promise.resolve([]);
 }
