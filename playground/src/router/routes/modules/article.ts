@@ -15,7 +15,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'ArticleList',
         path: '/article/list',
-        component: () => import('#/views/article/list/index.vue'),
+        component: () => import('#/views/article/list/list.vue'),
         meta: {
           icon: 'mdi:format-list-bulleted',
           title: $t('article.list.title'),
