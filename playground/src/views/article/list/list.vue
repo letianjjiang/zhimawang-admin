@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { Page, useVbenDrawer } from '@vben/common-ui';
+import { Page, useVbenDrawer, confirm } from '@vben/common-ui';
 
-import { Button, Tag, Image } from 'ant-design-vue';
+import { Button, Tag, Image, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getArticleListApi, getArticleDetailApi } from '#/api/core/article';
@@ -180,8 +180,21 @@ const handleEdit = (row: RowType) => {
 };
 
 const handleDelete = (row: RowType) => {
-  console.log('删除文章:', row);
-  // TODO: 实现删除逻辑
+  confirm({
+    icon: 'warning',
+    content: `删除文章《${row.title ?? row.id}》将会联动文章的所有评论、点赞数量、图片和浏览量也一并删除，此操作不可恢复，是否继续？`,
+  })
+    .then(async () => {
+      // TODO: 调用删除文章API，例如：await deleteArticleApi(row.id)
+      // 这里先做一个异步占位，待接入真实API后移除
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      message.success('删除成功');
+      // TODO: 删除成功后刷新列表数据
+      // 若需要：gridApi?.reload?.()
+    })
+    .catch(() => {
+      // 用户取消，无需处理
+    });
 };
 
 </script>
