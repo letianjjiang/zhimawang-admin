@@ -3,7 +3,7 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { Page } from '@vben/common-ui';
 
-import { Button, Tag } from 'ant-design-vue';
+import { Button, Tag, Image } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getArticleListApi } from '#/api/core/article';
@@ -17,6 +17,7 @@ const gridOptions: VxeGridProps<RowType> = {
     { field: 'id', title: '文章ID', width: 80 },
     { field: 'title', title: '文章标题', width: 300 },
     { field: 'author', title: '作者', width: 120 },
+    { field: 'cover', title: '封面', width: 70, slots: { default: 'cover' } },
     { 
       field: 'contentType', 
       title: '内容类型', 
@@ -84,6 +85,10 @@ const handleDelete = (row: RowType) => {
 <template>
   <Page auto-content-height>
     <Grid>
+      <template #cover="{ row }">
+        <Image :src="row.cover" height="30" width="30" />
+      </template>
+
       <template #contentType="{ row }">
         <Tag :color="row.contentType === 'all' ? 'blue' : 'green'">
           {{ row.contentType === 'all' ? '全部' : row.contentType }}
