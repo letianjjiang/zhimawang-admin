@@ -68,6 +68,33 @@ const routes: RouteRecordRaw[] = [
           title: $t('article.tag.title'),
         },
       },
+      {
+        name: 'ArticleType1',
+        path: '/article/1',
+        component: () => import('#/views/article/type1/index.vue'),
+        meta: {
+          icon: 'mdi:format-list-bulleted',
+          title: '文章列表',
+        },
+      },
+      {
+        name: 'ArticleType2',
+        path: '/article/2',
+        component: () => import('#/views/article/type2/index.vue'),
+        meta: {
+          icon: 'mdi:format-list-bulleted',
+          title: '论坛列表',
+        },
+      },
+      {
+        name: 'ArticleType3',
+        path: '/article/3',
+        component: () => import('#/views/article/type3/index.vue'),
+        meta: {
+          icon: 'mdi:format-list-bulleted',
+          title: '流贴列表',
+        },
+      },
     ],
   },
 ];
