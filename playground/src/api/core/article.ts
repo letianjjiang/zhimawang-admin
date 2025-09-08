@@ -28,6 +28,52 @@ export namespace ArticleApi {
     errorCode?: string;
     debugInfo?: string;
   }
+
+  /** 文章详情（精简字段，按需展示） */
+  export interface ArticleDetail {
+    articleId: number;
+    articleName: string;
+    articleContent: string;
+    articleWriter: string;
+    viewCount: number;
+    createdAt: string;
+    updatedAt?: string;
+    lastReplyAt?: string;
+    contentType?: number;
+    channelId?: number | null;
+    status?: number;
+    isTop?: number;
+    isFeatured?: number;
+    replyCount?: number;
+    images?: { pictureId: number; pictureUrl: string }[];
+    comments?: Array<{
+      commentId: number;
+      parentId: number | null;
+      articleId: number;
+      userId: number;
+      comments: string;
+      createdAt: string;
+      userAvatar?: string;
+      ipLocation?: string;
+      replies?: any[];
+    }>;
+    author?: {
+      userId: number | null;
+      username: string;
+      nickname: string;
+      role: string | null;
+      ipAddress: string | null;
+      wechatOpenid: string | null;
+      userAvatar: string | null;
+    };
+    followStatus?: {
+      isFollowing: boolean;
+      isFollowedBy: boolean;
+      isMutualFollow: boolean;
+      followersCount: number;
+      followingCount: number;
+    };
+  }
 }
 
 /**
@@ -35,4 +81,11 @@ export namespace ArticleApi {
  */
 export async function getArticleListApi(params: ArticleApi.ArticleListParams = {}) {
   return requestClient.get<ArticleApi.ArticleItem[]>('/api/articles', { params });
+}
+
+/**
+ * 获取文章详情
+ */
+export async function getArticleDetailApi(articleId: number) {
+  return requestClient.get<ArticleApi.ArticleDetail>(`/api/articles/${articleId}`);
 }
