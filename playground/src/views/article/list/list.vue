@@ -49,7 +49,6 @@ const gridOptions: VxeGridProps<RowType> = {
           limit: page.pageSize,
           offset: (page.currentPage - 1) * page.pageSize,
         });
-        
         // 返回符合 VxeGrid 期望的数据格式
         return {
           items: result, // VxeGrid 期望的数据字段名

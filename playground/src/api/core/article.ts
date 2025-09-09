@@ -89,3 +89,10 @@ export async function getArticleListApi(params: ArticleApi.ArticleListParams = {
 export async function getArticleDetailApi(articleId: number) {
   return requestClient.get<ArticleApi.ArticleDetail>(`/api/articles/${articleId}`);
 }
+
+/**
+ * 获取文章总浏览量（数据库基线 + Redis 增量）
+ */
+export async function getArticleViewsApi(articleId: number) {
+  return requestClient.get<{ total: number }>(`/api/articles/${articleId}/views`);
+}
