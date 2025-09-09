@@ -1,0 +1,14 @@
+{
+  "title": "个人管理",
+  "profile": {
+    "title": "个人资料"
+  },
+  "settings": {
+    "title": "个人设置"
+  },
+  "security": {
+    "title": "安全设置"
+  }
+}
+
+
