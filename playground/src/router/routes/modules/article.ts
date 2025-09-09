@@ -71,7 +71,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'ArticleType1',
         path: '/article/1',
-        component: () => import('#/views/article/type1/index.vue'),
+        component: () => import('#/views/article/type1/list.vue'),
         meta: {
           icon: 'mdi:format-list-bulleted',
           title: '文章列表',
@@ -80,7 +80,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'ArticleType2',
         path: '/article/2',
-        component: () => import('#/views/article/type2/index.vue'),
+        component: () => import('#/views/article/type2/list.vue'),
         meta: {
           icon: 'mdi:format-list-bulleted',
           title: '论坛列表',
@@ -89,7 +89,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'ArticleType3',
         path: '/article/3',
-        component: () => import('#/views/article/type3/index.vue'),
+        component: () => import('#/views/article/type3/list.vue'),
         meta: {
           icon: 'mdi:format-list-bulleted',
           title: '流贴列表',
