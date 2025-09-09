@@ -4,6 +4,7 @@ import type { Component } from 'vue';
 import type { AnyFunction } from '@vben/types';
 
 import { computed, useTemplateRef, watch } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { useHoverToggle } from '@vben/hooks';
 import { LockKeyhole, LogOut } from '@vben/icons';
@@ -131,6 +132,8 @@ const enableShortcutKey = computed(() => {
   return props.enableShortcutKey && preferences.shortcutKeys.enable;
 });
 
+const router = useRouter();
+
 function handleOpenLock() {
   lockModalApi.open();
 }
@@ -149,6 +152,11 @@ function handleLogout() {
 function handleSubmitLogout() {
   emit('logout');
   logoutModalApi.close();
+}
+
+function handleOpenProfile() {
+  openPopover.value = false;
+  router.push('/personal/profile');
 }
 
 if (enableShortcutKey.value) {
@@ -198,7 +206,10 @@ if (enableShortcutKey.value) {
     </DropdownMenuTrigger>
     <DropdownMenuContent class="mr-2 min-w-[240px] p-0 pb-1">
       <div ref="refContent">
-        <DropdownMenuLabel class="flex items-center p-3">
+        <DropdownMenuLabel
+          class="flex items-center p-3 cursor-pointer hover:bg-accent"
+          @click="handleOpenProfile"
+        >
           <VbenAvatar
             :alt="text"
             :src="avatar"
