@@ -18,20 +18,20 @@ const formSchema = computed((): VbenFormSchema[] => {
     {
       component: 'VbenInput',
       componentProps: {
-        placeholder: $t('authentication.usernameTip'),
+        placeholder: '请输入手机号',
       },
-      fieldName: 'username',
-      label: $t('authentication.username'),
-      rules: z.string().min(1, { message: $t('authentication.usernameTip') }),
+      fieldName: 'phone',
+      label: '手机号',
+      rules: z.string().min(1, { message: '请输入手机号' }),
     },
     {
       component: 'VbenInputPassword',
       componentProps: {
-        placeholder: $t('authentication.password'),
+        placeholder: '请输入密码',
       },
-      fieldName: 'password',
-      label: $t('authentication.password'),
-      rules: z.string().min(1, { message: $t('authentication.passwordTip') }),
+      fieldName: 'identifier',
+      label: '密码',
+      rules: z.string().min(1, { message: '请输入密码' }),
     },
     {
       component: markRaw(SliderCaptcha),
@@ -47,7 +47,14 @@ const loginRef =
   useTemplateRef<InstanceType<typeof AuthenticationLogin>>('loginRef');
 
 async function onSubmit(params: Recordable<any>) {
-  authStore.authLogin(params).catch(() => {
+  // 添加登录类型参数
+  const loginParams = {
+    type: 'password' as const,
+    phone: params.phone,
+    identifier: params.identifier,
+  };
+
+  authStore.authLogin(loginParams).catch(() => {
     // 登陆失败，刷新验证码的演示
     const formApi = loginRef.value?.getFormApi();
     // 重置验证码组件的值

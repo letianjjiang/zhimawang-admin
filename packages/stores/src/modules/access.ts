@@ -40,9 +40,13 @@ interface AccessState {
    */
   loginExpired: boolean;
   /**
-   * 登录 accessToken
+   * 登录 refreshToken
    */
   refreshToken: AccessToken;
+  /**
+   * 会话ID
+   */
+  sessionId: AccessToken;
 }
 
 /**
@@ -94,6 +98,9 @@ export const useAccessStore = defineStore('core-access', {
     setRefreshToken(token: AccessToken) {
       this.refreshToken = token;
     },
+    setSessionId(sessionId: AccessToken) {
+      this.sessionId = sessionId;
+    },
     unlockScreen() {
       this.isLockScreen = false;
       this.lockScreenPassword = undefined;
@@ -104,6 +111,7 @@ export const useAccessStore = defineStore('core-access', {
     pick: [
       'accessToken',
       'refreshToken',
+      'sessionId',
       'accessCodes',
       'isLockScreen',
       'lockScreenPassword',
@@ -119,6 +127,7 @@ export const useAccessStore = defineStore('core-access', {
     lockScreenPassword: undefined,
     loginExpired: false,
     refreshToken: null,
+    sessionId: null,
   }),
 });
 

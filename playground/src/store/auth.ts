@@ -40,15 +40,29 @@ export const useAuthStore = defineStore('auth', () => {
       if (response.token) {
         accessStore.setAccessToken(response.token);
 
-        // 获取用户信息并存储到 accessStore 中
-        const [fetchUserInfoResult, accessCodes] = await Promise.all([
-          fetchUserInfo(),
-          getAccessCodesApi(),
-        ]);
+        // 存储refreshToken和sessionId
+        if (response.refreshToken) {
+          accessStore.setRefreshToken(response.refreshToken);
+        }
+        if (response.sessionId) {
+          accessStore.setSessionId(response.sessionId);
+        }
 
-        userInfo = fetchUserInfoResult;
+        // 从登录响应中直接获取用户信息，避免额外请求
+        userInfo = {
+          userId: response.userId,
+          username: response.username,
+          realName: response.nickname || response.username,
+          avatar: '', // 登录响应中没有头像信息
+          homePath: preferences.app.defaultHomePath,
+          phone: response.phone,
+          role: response.role,
+        };
 
         userStore.setUserInfo(userInfo);
+
+        // 获取权限码（知马网API暂不支持，返回空数组）
+        const accessCodes = await getAccessCodesApi();
         accessStore.setAccessCodes(accessCodes);
 
         if (accessStore.loginExpired) {
@@ -102,7 +116,7 @@ export const useAuthStore = defineStore('auth', () => {
   async function fetchUserInfo() {
     let userInfo: null | UserInfo = null;
     const response = await getUserInfoApi();
-    
+
     // 将API返回的用户信息转换为系统需要的格式
     userInfo = {
       userId: response.userId?.toString() || '',
@@ -118,7 +132,7 @@ export const useAuthStore = defineStore('auth', () => {
       homePath: preferences.app.defaultHomePath,
       token: '',
     };
-    
+
     userStore.setUserInfo(userInfo);
     return userInfo;
   }
