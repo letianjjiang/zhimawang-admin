@@ -3,28 +3,29 @@ import { baseRequestClient, requestClient } from '#/api/request';
 export namespace AuthApi {
   /** 登录接口参数 */
   export interface LoginParams {
-    identifier: string;
-    phone: string;
     type: 'password' | 'sms';
+    phone: string;
+    identifier: string; // 密码或验证码
   }
 
   /** 登录接口返回值 */
   export interface LoginResult {
-    expiresIn: number;
-    nickname: string;
-    phone: string;
-    refreshExpiresIn: number;
+    accessToken: string;
     refreshToken: string;
-    role: string;
     sessionId: string;
-    token: string;
     userId: number;
     username: string;
+    role: string;
+    nickname: string;
+    phone: string;
+    expiresIn: number;
+    refreshExpiresIn: number;
   }
 
   export interface RefreshTokenResult {
-    data: string;
-    status: number;
+    accessToken: string;
+    refreshToken: string;
+    sessionId: string;
   }
 }
 
@@ -42,7 +43,7 @@ export async function loginApi(data: AuthApi.LoginParams) {
  */
 export async function refreshTokenApi() {
   return baseRequestClient.post<AuthApi.RefreshTokenResult>(
-    '/api/auth/refresh',
+    '/api/user/refresh',
     null,
     {
       withCredentials: true,
@@ -65,5 +66,5 @@ export async function logoutApi() {
  */
 export async function getAccessCodesApi() {
   // 知马网API暂不支持权限码功能，返回空数组
-  return [];
+  return Promise.resolve([]);
 }
