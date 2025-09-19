@@ -102,7 +102,7 @@ export const useAuthStore = defineStore('auth', () => {
   async function fetchUserInfo() {
     let userInfo: null | UserInfo = null;
     const response = await getUserInfoApi();
-    
+
     // 将API返回的用户信息转换为系统需要的格式
     userInfo = {
       userId: response.userId?.toString() || '',
@@ -118,7 +118,7 @@ export const useAuthStore = defineStore('auth', () => {
       homePath: preferences.app.defaultHomePath,
       token: '',
     };
-    
+
     userStore.setUserInfo(userInfo);
     return userInfo;
   }

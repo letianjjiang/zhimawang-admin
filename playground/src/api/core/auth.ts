@@ -3,23 +3,23 @@ import { baseRequestClient, requestClient } from '#/api/request';
 export namespace AuthApi {
   /** 登录接口参数 */
   export interface LoginParams {
-    type: 'password' | 'sms';
-    phone: string;
     identifier: string; // 密码或验证码
+    phone: string;
+    type: 'password' | 'sms';
   }
 
   /** 登录接口返回值 */
   export interface LoginResult {
     accessToken: string;
+    expiresIn: number;
+    nickname: string;
+    phone: string;
+    refreshExpiresIn: number;
     refreshToken: string;
+    role: string;
     sessionId: string;
     userId: number;
     username: string;
-    role: string;
-    nickname: string;
-    phone: string;
-    expiresIn: number;
-    refreshExpiresIn: number;
   }
 
   export interface RefreshTokenResult {
@@ -66,5 +66,5 @@ export async function logoutApi() {
  */
 export async function getAccessCodesApi() {
   // 知马网API暂不支持权限码功能，返回空数组
-  return Promise.resolve([]);
+  return [];
 }
