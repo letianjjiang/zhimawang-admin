@@ -60,6 +60,15 @@ const routes: RouteRecordRaw[] = [
           title: $t('user.info.title'),
         },
       },
+      {
+        name: 'UserSession',
+        path: '/user/session',
+        component: () => import('#/views/user/session/index.vue'),
+        meta: {
+          icon: 'mdi:account-clock',
+          title: '用户会话',
+        },
+      },
     ],
   },
 ];
