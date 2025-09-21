@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { Page } from '@vben/common-ui';
-import { getUserInfoApi } from '#/api/core/user';
-import { VbenAvatar } from '@vben/common-ui';
 import { computed, onMounted, ref } from 'vue';
+
+import { Page, VbenAvatar } from '@vben/common-ui';
+
+import { getUserInfoApi } from '#/api/core/user';
 
 // 用户信息状态
 const userInfo = ref<any>(null);
@@ -38,8 +39,8 @@ const ipInfo = computed(() => {
         city: ipData.data[2] || '',
       };
     }
-  } catch (e) {
-    console.warn('Failed to parse IP address info:', e);
+  } catch (error) {
+    console.warn('Failed to parse IP address info:', error);
   }
   return null;
 });
@@ -60,17 +61,24 @@ const roleDisplay = computed(() => {
   <Page auto-content-height>
     <div class="p-6">
       <div class="mb-6">
-        <h1 class="text-2xl font-bold mb-2">个人资料</h1>
+        <h1 class="mb-2 text-2xl font-bold">个人资料</h1>
         <p class="text-gray-600">查看和管理您的个人信息</p>
       </div>
 
-      <div v-if="loading" class="flex justify-center items-center py-8">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div v-if="loading" class="flex items-center justify-center py-8">
+        <div
+          class="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"
+        ></div>
       </div>
 
-      <div v-else-if="userInfo" class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <div
+        v-else-if="userInfo"
+        class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm"
+      >
         <!-- 用户头像和基本信息 -->
-        <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white">
+        <div
+          class="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white"
+        >
           <div class="flex items-center space-x-4">
             <VbenAvatar
               :src="userInfo.userAvatar"
@@ -79,9 +87,13 @@ const roleDisplay = computed(() => {
               class="ring-4 ring-white/20"
             />
             <div>
-              <h2 class="text-xl font-semibold">{{ userInfo.nickname || userInfo.username }}</h2>
+              <h2 class="text-xl font-semibold">
+                {{ userInfo.nickname || userInfo.username }}
+              </h2>
               <p class="text-blue-100">{{ userInfo.username }}</p>
-              <span class="inline-block px-2 py-1 bg-white/20 rounded-full text-sm mt-1">
+              <span
+                class="mt-1 inline-block rounded-full bg-white/20 px-2 py-1 text-sm"
+              >
                 {{ roleDisplay }}
               </span>
             </div>
@@ -90,24 +102,26 @@ const roleDisplay = computed(() => {
 
         <!-- 详细信息 -->
         <div class="p-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
             <!-- 基本信息 -->
             <div>
-              <h3 class="text-lg font-semibold mb-4 text-gray-800">基本信息</h3>
+              <h3 class="mb-4 text-lg font-semibold text-gray-800">基本信息</h3>
               <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
+                <div class="flex justify-between border-b border-gray-100 py-2">
                   <span class="text-gray-600">用户ID</span>
                   <span class="font-medium">{{ userInfo.userId }}</span>
                 </div>
-                <div class="flex justify-between py-2 border-b border-gray-100">
+                <div class="flex justify-between border-b border-gray-100 py-2">
                   <span class="text-gray-600">用户名</span>
                   <span class="font-medium">{{ userInfo.username }}</span>
                 </div>
-                <div class="flex justify-between py-2 border-b border-gray-100">
+                <div class="flex justify-between border-b border-gray-100 py-2">
                   <span class="text-gray-600">昵称</span>
-                  <span class="font-medium">{{ userInfo.nickname || '未设置' }}</span>
+                  <span class="font-medium">{{
+                    userInfo.nickname || '未设置'
+                  }}</span>
                 </div>
-                <div class="flex justify-between py-2 border-b border-gray-100">
+                <div class="flex justify-between border-b border-gray-100 py-2">
                   <span class="text-gray-600">角色</span>
                   <span class="font-medium">{{ roleDisplay }}</span>
                 </div>
@@ -116,19 +130,25 @@ const roleDisplay = computed(() => {
 
             <!-- 联系信息 -->
             <div>
-              <h3 class="text-lg font-semibold mb-4 text-gray-800">联系信息</h3>
+              <h3 class="mb-4 text-lg font-semibold text-gray-800">联系信息</h3>
               <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
+                <div class="flex justify-between border-b border-gray-100 py-2">
                   <span class="text-gray-600">手机号</span>
-                  <span class="font-medium">{{ userInfo.phone || '未设置' }}</span>
+                  <span class="font-medium">{{
+                    userInfo.phone || '未设置'
+                  }}</span>
                 </div>
-                <div class="flex justify-between py-2 border-b border-gray-100">
+                <div class="flex justify-between border-b border-gray-100 py-2">
                   <span class="text-gray-600">国际格式</span>
-                  <span class="font-medium">{{ userInfo.phoneE164 || '未设置' }}</span>
+                  <span class="font-medium">{{
+                    userInfo.phoneE164 || '未设置'
+                  }}</span>
                 </div>
-                <div class="flex justify-between py-2 border-b border-gray-100">
+                <div class="flex justify-between border-b border-gray-100 py-2">
                   <span class="text-gray-600">微信OpenID</span>
-                  <span class="font-medium">{{ userInfo.wechatOpenid || '未绑定' }}</span>
+                  <span class="font-medium">{{
+                    userInfo.wechatOpenid || '未绑定'
+                  }}</span>
                 </div>
               </div>
             </div>
@@ -136,12 +156,12 @@ const roleDisplay = computed(() => {
 
           <!-- IP地址信息 -->
           <div v-if="ipInfo" class="mt-6">
-            <h3 class="text-lg font-semibold mb-4 text-gray-800">网络信息</h3>
-            <div class="bg-gray-50 rounded-lg p-4">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <h3 class="mb-4 text-lg font-semibold text-gray-800">网络信息</h3>
+            <div class="rounded-lg bg-gray-50 p-4">
+              <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div class="flex justify-between">
                   <span class="text-gray-600">IP地址</span>
-                  <span class="font-medium font-mono">{{ ipInfo.ip }}</span>
+                  <span class="font-mono font-medium">{{ ipInfo.ip }}</span>
                 </div>
                 <div class="flex justify-between">
                   <span class="text-gray-600">国家</span>
@@ -161,7 +181,7 @@ const roleDisplay = computed(() => {
         </div>
       </div>
 
-      <div v-else class="text-center py-8">
+      <div v-else class="py-8 text-center">
         <p class="text-gray-500">获取用户信息失败</p>
       </div>
     </div>

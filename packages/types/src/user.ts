@@ -46,7 +46,7 @@ interface UserInfo extends BasicUserInfo {
   /**
    * 密码（通常为null）
    */
-  password?: string | null;
+  password?: null | string;
 }
 
 export type { UserInfo };

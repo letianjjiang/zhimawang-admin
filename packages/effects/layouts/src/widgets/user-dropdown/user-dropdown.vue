@@ -207,7 +207,7 @@ if (enableShortcutKey.value) {
     <DropdownMenuContent class="mr-2 min-w-[240px] p-0 pb-1">
       <div ref="refContent">
         <DropdownMenuLabel
-          class="flex items-center p-3 cursor-pointer hover:bg-accent"
+          class="hover:bg-accent flex cursor-pointer items-center p-3"
           @click="handleOpenProfile"
         >
           <VbenAvatar
