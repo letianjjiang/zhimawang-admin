@@ -51,6 +51,15 @@ const routes: RouteRecordRaw[] = [
           hideInMenu: true,
         },
       },
+      {
+        name: 'UserInfo',
+        path: '/user/info',
+        component: () => import('#/views/user/info/index.vue'),
+        meta: {
+          icon: 'mdi:account',
+          title: $t('user.info.title'),
+        },
+      },
     ],
   },
 ];

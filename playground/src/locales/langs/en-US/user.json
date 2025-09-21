@@ -11,5 +11,8 @@
   },
   "detail": {
     "title": "User Detail"
+  },
+  "info": {
+    "title": "Profile"
   }
 }

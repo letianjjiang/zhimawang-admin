@@ -156,7 +156,7 @@ function handleSubmitLogout() {
 
 function handleOpenProfile() {
   openPopover.value = false;
-  router.push('/personal/profile');
+  router.push('/user/info');
 }
 
 if (enableShortcutKey.value) {

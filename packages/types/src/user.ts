@@ -35,6 +35,18 @@ interface UserInfo extends BasicUserInfo {
    * 用户角色（单个角色）
    */
   role?: string;
+  /**
+   * 手机号（E164格式）
+   */
+  phoneE164?: string;
+  /**
+   * 手机号（原始格式）
+   */
+  phone?: string;
+  /**
+   * 密码（通常为null）
+   */
+  password?: string | null;
 }
 
 export type { UserInfo };

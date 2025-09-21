@@ -14,15 +14,6 @@ const routes: RouteRecordRaw[] = [
     component: () => import('#/views/personal/index.vue'),
     children: [
       {
-        name: 'PersonalProfile',
-        path: '/personal/profile',
-        component: () => import('#/views/personal/profile/index.vue'),
-        meta: {
-          icon: 'mdi:account',
-          title: $t('personal.profile.title'),
-        },
-      },
-      {
         name: 'PersonalSettings',
         path: '/personal/settings',
         component: () => import('#/views/personal/settings/index.vue'),
