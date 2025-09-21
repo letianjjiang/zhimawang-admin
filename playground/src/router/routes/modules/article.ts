@@ -69,6 +69,15 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'ArticleChannel',
+        path: '/article/channel',
+        component: () => import('#/views/article/channel/index.vue'),
+        meta: {
+          icon: 'mdi:view-grid',
+          title: $t('article.channel.title'),
+        },
+      },
+      {
         name: 'ArticleType1',
         path: '/article/1',
         component: () => import('#/views/article/type1/list.vue'),

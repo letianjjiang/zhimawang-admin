@@ -17,5 +17,20 @@
   },
   "tag": {
     "title": "文章标签"
+  },
+  "channel": {
+    "title": "频道管理",
+    "list": {
+      "title": "频道列表"
+    },
+    "channelId": "频道ID",
+    "channelName": "频道名称",
+    "visible": "可见性",
+    "sort": "排序",
+    "operation": "操作",
+    "pageType": "页面类型",
+    "selectPageType": "请选择页面类型",
+    "refresh": "刷新",
+    "loading": "加载中..."
   }
 }

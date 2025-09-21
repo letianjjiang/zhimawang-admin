@@ -3,96 +3,160 @@ import { requestClient } from '#/api/request';
 export namespace ArticleApi {
   /** 文章列表查询参数 */
   export interface ArticleListParams {
-    contentType?: number; // 内容类型：1=文章, 2=论坛帖, 不传=所有类型
+    channelId?: number; // 频道ID，如果传入则优先根据频道ID获取文章
     limit?: number; // 每页文章数量，默认10
     offset?: number; // 分页偏移量，默认0
+    pageId?: number; // 页面类型ID：对应pages表的page_id，如1=热门, 2=财经, 3=投资圈, 4=小红书, 5=留学圈等
+    randomSeed?: number; // 随机种子：传入相同的种子值可确保随机顺序在分页间保持一致
   }
 
   /** 文章列表项 */
   export interface ArticleItem {
-    id: number;
-    title: string;
     author: string;
-    cover: string;
     comments: number;
     contentType: string;
-    views: number;
+    cover: string;
     createdAt: string;
+    id: number;
+    title: string;
+    views: number;
+  }
+
+  /** 文章列表响应数据 */
+  export interface ArticleListData {
+    articles: ArticleItem[];
+    page: number;
+    pageSize: number;
+    total: number;
   }
 
   /** 文章列表响应 */
   export interface ArticleListResponse {
-    status: string;
-    message: string;
     data: ArticleItem[];
-    errorCode?: string;
     debugInfo?: string;
+    errorCode?: string;
+    message: string;
+    status: string;
+  }
+
+  /** API响应包装器 */
+  export interface ApiResponse<T> {
+    data: T;
+    debugInfo?: string;
+    errorCode?: string;
+    message: string;
+    status: string;
+  }
+
+  /** 频道信息 */
+  export interface ChannelItem {
+    channelId: number;
+    channelImgUrl?: null | string;
+    channelName: string;
+    channelType: number;
+    parentId: number;
+    sort: number;
+  }
+
+  /** 频道列表响应 */
+  export interface ChannelListResponse {
+    data: ChannelItem[];
+    debugInfo?: string;
+    errorCode?: string;
+    message: string;
+    status: string;
   }
 
   /** 文章详情（精简字段，按需展示） */
   export interface ArticleDetail {
+    articleContent: string;
     articleId: number;
     articleName: string;
-    articleContent: string;
     articleWriter: string;
-    viewCount: number;
-    createdAt: string;
-    updatedAt?: string;
-    lastReplyAt?: string;
-    contentType?: number;
-    channelId?: number | null;
-    status?: number;
-    isTop?: number;
-    isFeatured?: number;
-    replyCount?: number;
-    images?: { pictureId: number; pictureUrl: string }[];
+    author?: {
+      ipAddress: null | string;
+      nickname: string;
+      role: null | string;
+      userAvatar: null | string;
+      userId: null | number;
+      username: string;
+      wechatOpenid: null | string;
+    };
+    channelId?: null | number;
     comments?: Array<{
-      commentId: number;
-      parentId: number | null;
       articleId: number;
-      userId: number;
+      commentId: number;
       comments: string;
       createdAt: string;
-      userAvatar?: string;
       ipLocation?: string;
+      parentId: null | number;
       replies?: any[];
+      userAvatar?: string;
+      userId: number;
     }>;
-    author?: {
-      userId: number | null;
-      username: string;
-      nickname: string;
-      role: string | null;
-      ipAddress: string | null;
-      wechatOpenid: string | null;
-      userAvatar: string | null;
-    };
+    contentType?: number;
+    createdAt: string;
     followStatus?: {
-      isFollowing: boolean;
-      isFollowedBy: boolean;
-      isMutualFollow: boolean;
       followersCount: number;
       followingCount: number;
+      isFollowedBy: boolean;
+      isFollowing: boolean;
+      isMutualFollow: boolean;
     };
+    images?: { pictureId: number; pictureUrl: string }[];
+    isFeatured?: number;
+    isTop?: number;
+    lastReplyAt?: string;
+    replyCount?: number;
+    status?: number;
+    updatedAt?: string;
+    viewCount: number;
   }
 }
 
 /**
  * 获取文章列表
  */
-export async function getArticleListApi(params: ArticleApi.ArticleListParams = {}) {
-  return requestClient.get<ArticleApi.ArticleItem[]>('/api/articles', { params });
+export async function getArticleListApi(
+  params: ArticleApi.ArticleListParams = {},
+) {
+  const response = await requestClient.get<ArticleApi.ApiResponse<any>>(
+    '/api/articles',
+    { params },
+  );
+  // 根据API文档，返回的数据结构可能是对象，需要根据实际情况调整
+  return response.data.articles || response.data || []; // 返回实际的文章数据数组
 }
 
 /**
  * 获取文章详情
  */
 export async function getArticleDetailApi(articleId: number) {
-  return requestClient.get<ArticleApi.ArticleDetail>(`/api/articles/${articleId}`);
+  const response = await requestClient.get<
+    ArticleApi.ApiResponse<ArticleApi.ArticleDetail>
+  >(`/api/articles/${articleId}`);
+  return response.data; // 返回实际的文章详情数据
 }
 
 /**
  * 获取文章总浏览量（数据库基线 + Redis 增量）
  */
 export async function getArticleViewsApi(articleId: number) {
-  return requestClient.get<{ total: number }>(`/api/articles/${articleId}/views`);
+  const response = await requestClient.get<
+    ArticleApi.ApiResponse<{ total: number }>
+  >(`/api/articles/${articleId}/views`);
+  return response.data; // 返回实际的浏览量数据
+}
+
+/**
+ * 获取频道列表
+ */
+export async function getChannelListApi(pageId: number) {
+  const response = await requestClient.get<ArticleApi.ChannelItem[]>(
+    '/api/articles/channels',
+    {
+      params: { pageId },
+    },
+  );
+  return response; // requestClient 已经自动提取了 data 字段
 }

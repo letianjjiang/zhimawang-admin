@@ -17,5 +17,20 @@
   },
   "tag": {
     "title": "Article Tag"
+  },
+  "channel": {
+    "title": "Channel Management",
+    "list": {
+      "title": "Channel List"
+    },
+    "channelId": "Channel ID",
+    "channelName": "Channel Name",
+    "visible": "Visibility",
+    "sort": "Sort",
+    "operation": "Operation",
+    "pageType": "Page Type",
+    "selectPageType": "Please select page type",
+    "refresh": "Refresh",
+    "loading": "Loading..."
   }
 }
