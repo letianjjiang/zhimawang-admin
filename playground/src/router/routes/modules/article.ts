@@ -83,7 +83,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/article/type1/list.vue'),
         meta: {
           icon: 'mdi:format-list-bulleted',
-          title: '文章列表',
+          title: '小红书文章列表',
         },
       },
       {

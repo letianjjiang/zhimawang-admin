@@ -1,14 +1,15 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
+import type { ArticleApi } from '#/api/core/article';
 
-import { Page, useVbenDrawer, confirm } from '@vben/common-ui';
+import { ref } from 'vue';
 
-import { Button, Tag, Image, message } from 'ant-design-vue';
+import { confirm, Page, useVbenDrawer } from '@vben/common-ui';
+
+import { Button, Image, message, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getArticleListApi, getArticleDetailApi } from '#/api/core/article';
-import type { ArticleApi } from '#/api/core/article';
-import { ref } from 'vue';
+import { getArticleDetailApi, getArticleListApi } from '#/api/core/article';
 
 interface RowType extends ArticleApi.ArticleItem {}
 
@@ -19,11 +20,11 @@ const gridOptions: VxeGridProps<RowType> = {
     { field: 'title', title: '文章标题', width: 300 },
     { field: 'author', title: '作者', width: 120 },
     { field: 'cover', title: '封面', width: 70, slots: { default: 'cover' } },
-    { 
-      field: 'contentType', 
-      title: '内容类型', 
+    {
+      field: 'contentType',
+      title: '内容类型',
       width: 100,
-      slots: { default: 'contentType' }
+      slots: { default: 'contentType' },
     },
     { field: 'views', title: '浏览量', width: 100 },
     { field: 'comments', title: '评论数', width: 80 },
@@ -41,7 +42,7 @@ const gridOptions: VxeGridProps<RowType> = {
       width: 150,
     },
   ],
-  height: 'auto',
+  height: 600,
   proxyConfig: {
     ajax: {
       query: async ({ page }) => {
@@ -49,11 +50,11 @@ const gridOptions: VxeGridProps<RowType> = {
           limit: page.pageSize,
           offset: (page.currentPage - 1) * page.pageSize,
         });
-        
+
         // 返回符合 VxeGrid 期望的数据格式
         return {
           items: result, // VxeGrid 期望的数据字段名
-          total: result.length, // 总数，注意：这里需要根据实际API返回的总数调整
+          total: 1000, // 设置一个合理的总数，避免无限滚动
         };
       },
     },
@@ -70,10 +71,9 @@ const drawerTitle = ref('基础示例');
 const articleDetail = ref<ArticleApi.ArticleDetail | null>(null);
 
 // 抽屉-基础信息网格
-let infoRows: Array<{ label: string; value: string | number | null }> = [];
+let infoRows: Array<{ label: string; value: null | number | string }> = [];
 const infoGridOptions = {
-  // 不设置height，避免在抽屉内重复计算造成空白累积
-  minHeight: undefined,
+  height: 200, // 设置固定高度
   border: true,
   showHeader: true,
   columns: [
@@ -82,13 +82,18 @@ const infoGridOptions = {
   ],
   data: infoRows,
 };
-const [InfoGrid, infoGridApi] = useVbenVxeGrid({ gridOptions: infoGridOptions });
+const [InfoGrid, infoGridApi] = useVbenVxeGrid({
+  gridOptions: infoGridOptions,
+});
 
 // 抽屉-图片网格
-interface ImageRow { pictureId: number; pictureUrl: string }
+interface ImageRow {
+  pictureId: number;
+  pictureUrl: string;
+}
 let imagesRows: ImageRow[] = [];
 const imagesGridOptions = {
-  minHeight: undefined,
+  height: 200, // 设置固定高度
   border: true,
   columns: [
     { field: 'pictureId', title: '图片ID', width: 100 },
@@ -102,19 +107,21 @@ const imagesGridOptions = {
   ],
   data: imagesRows,
 };
-const [ImagesGrid, imagesGridApi] = useVbenVxeGrid({ gridOptions: imagesGridOptions });
+const [ImagesGrid, imagesGridApi] = useVbenVxeGrid({
+  gridOptions: imagesGridOptions,
+});
 
 // 抽屉-评论网格
 interface CommentRow {
   commentId: number;
-  userId: number;
   comments: string;
   createdAt: string;
   ipLocation?: string;
+  userId: number;
 }
 let commentsRows: CommentRow[] = [];
 const commentsGridOptions = {
-  minHeight: undefined,
+  height: 200, // 设置固定高度
   border: true,
   columns: [
     { field: 'commentId', title: '评论ID', width: 90 },
@@ -125,16 +132,18 @@ const commentsGridOptions = {
   ],
   data: commentsRows,
 };
-const [CommentsGrid, commentsGridApi] = useVbenVxeGrid({ gridOptions: commentsGridOptions });
+const [CommentsGrid, commentsGridApi] = useVbenVxeGrid({
+  gridOptions: commentsGridOptions,
+});
 
 // 事件处理函数
 const handleView = async (row: RowType) => {
-  drawerTitle.value = row.title ?? '文章详情';
+  drawerTitle.value = row.articleName ?? '文章详情';
   drawerLoading.value = true;
   articleDetail.value = null;
   drawerApi.open();
   try {
-    const detail = await getArticleDetailApi(row.id);
+    const detail = await getArticleDetailApi(row.articleId);
     articleDetail.value = detail;
     // 填充基础信息
     infoRows = [
@@ -154,7 +163,10 @@ const handleView = async (row: RowType) => {
     ];
     infoGridApi.setGridOptions({ data: infoRows });
     // 填充图片
-    imagesRows = (detail.images || []).map((i) => ({ pictureId: i.pictureId, pictureUrl: i.pictureUrl }));
+    imagesRows = (detail.images || []).map((i) => ({
+      pictureId: i.pictureId,
+      pictureUrl: i.pictureUrl,
+    }));
     imagesGridApi.setGridOptions({ data: imagesRows });
     // 填充评论
     commentsRows = (detail.comments || []).map((c) => ({
@@ -174,15 +186,15 @@ const handleView = async (row: RowType) => {
   }
 };
 
-const handleEdit = (row: RowType) => {
-  console.log('编辑文章:', row);
+const handleEdit = (_row: RowType) => {
+  console.warn('编辑文章');
   // TODO: 跳转到文章编辑页面
 };
 
 const handleDelete = (row: RowType) => {
   confirm({
     icon: 'warning',
-    content: `删除文章《${row.title ?? row.id}》将会联动文章的所有评论、点赞数量、图片和浏览量也一并删除，此操作不可恢复，是否继续？`,
+    content: `删除文章《${row.articleName ?? row.articleId}》将会联动文章的所有评论、点赞数量、图片和浏览量也一并删除，此操作不可恢复，是否继续？`,
   })
     .then(async () => {
       // TODO: 调用删除文章API，例如：await deleteArticleApi(row.id)
@@ -196,31 +208,32 @@ const handleDelete = (row: RowType) => {
       // 用户取消，无需处理
     });
 };
-
 </script>
 
 <template>
   <Page auto-content-height>
     <Grid>
       <template #cover="{ row }">
-        <Image :src="row.cover" height="30" width="30" />
+        <Image :src="row.images?.[0]?.pictureUrl" height="30" width="30" />
       </template>
 
-      <template #contentType="{ row }">
-        <Tag :color="row.contentType === 'all' ? 'blue' : 'green'">
-          {{ row.contentType === 'all' ? '全部' : row.contentType }}
-        </Tag>
+      <template #contentType>
+        <Tag color="blue"> 文章 </Tag>
       </template>
-      
+
       <template #action="{ row }">
         <Button type="link" size="small" @click="handleView(row)">查看</Button>
         <Button type="link" size="small" @click="handleEdit(row)">编辑</Button>
-        <Button type="link" size="small" danger @click="handleDelete(row)">删除</Button>
+        <Button type="link" size="small" danger @click="handleDelete(row)">
+          删除
+        </Button>
       </template>
     </Grid>
     <Drawer class="w-[800px]" :title="drawerTitle">
-      <div v-if="drawerLoading" class="text-center text-gray-400 py-6">加载中...</div>
-      <div v-else>
+      <div v-if="drawerLoading" class="py-6 text-center text-gray-400">
+        加载中...
+      </div>
+      <div v-else class="max-h-[70vh] overflow-y-auto">
         <div class="mb-3">
           <div class="mb-2 font-medium">基础信息</div>
           <InfoGrid />
@@ -229,11 +242,20 @@ const handleDelete = (row: RowType) => {
           <div class="mb-2 font-medium">全部图片</div>
           <ImagesGrid>
             <template #img="{ row }">
-              <img :src="row.pictureUrl" alt="thumb" style="width:120px;height:120px;object-fit:cover;border-radius:4px;" />
+              <img
+                :src="row.pictureUrl"
+                alt="thumb"
+                style="
+                  width: 120px;
+                  height: 120px;
+                  object-fit: cover;
+                  border-radius: 4px;
+                "
+              />
             </template>
           </ImagesGrid>
         </div>
-        
+
         <div>
           <div class="mb-2 font-medium">评论</div>
           <CommentsGrid />

@@ -42,7 +42,7 @@ const gridOptions: VxeGridProps<RowType> = {
       width: 150,
     },
   ],
-  height: 'auto',
+  height: 600,
   proxyConfig: {
     ajax: {
       query: async ({ page }) => {
@@ -53,7 +53,7 @@ const gridOptions: VxeGridProps<RowType> = {
         // 返回符合 VxeGrid 期望的数据格式
         return {
           items: response, // VxeGrid 期望的数据字段名
-          total: response.length, // 总数，注意：这里需要根据实际API返回的总数调整
+          total: 1000, // 设置一个合理的总数，避免无限滚动
         };
       },
     },
@@ -138,12 +138,12 @@ const [CommentsGrid, commentsGridApi] = useVbenVxeGrid({
 
 // 事件处理函数
 const handleView = async (row: RowType) => {
-  drawerTitle.value = row.title ?? '文章详情';
+  drawerTitle.value = row.articleName ?? '文章详情';
   drawerLoading.value = true;
   articleDetail.value = null;
   drawerApi.open();
   try {
-    const detail = await getArticleDetailApi(row.id);
+    const detail = await getArticleDetailApi(row.articleId);
     articleDetail.value = detail;
     // 填充基础信息
     infoRows = [
@@ -194,7 +194,7 @@ const handleEdit = (_row: RowType) => {
 const handleDelete = (row: RowType) => {
   confirm({
     icon: 'warning',
-    content: `删除文章《${row.title ?? row.id}》将会联动文章的所有评论、点赞数量、图片和浏览量也一并删除，此操作不可恢复，是否继续？`,
+    content: `删除文章《${row.articleName ?? row.articleId}》将会联动文章的所有评论、点赞数量、图片和浏览量也一并删除，此操作不可恢复，是否继续？`,
   })
     .then(async () => {
       // TODO: 调用删除文章API，例如：await deleteArticleApi(row.id)
@@ -214,13 +214,11 @@ const handleDelete = (row: RowType) => {
   <Page auto-content-height>
     <Grid>
       <template #cover="{ row }">
-        <Image :src="row.cover" height="30" width="30" />
+        <Image :src="row.images?.[0]?.pictureUrl" height="30" width="30" />
       </template>
 
-      <template #contentType="{ row }">
-        <Tag :color="row.contentType === 'all' ? 'blue' : 'green'">
-          {{ row.contentType === 'all' ? '全部' : row.contentType }}
-        </Tag>
+      <template #contentType>
+        <Tag color="blue"> 文章 </Tag>
       </template>
 
       <template #action="{ row }">

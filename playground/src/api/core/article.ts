@@ -12,27 +12,37 @@ export namespace ArticleApi {
 
   /** 文章列表项 */
   export interface ArticleItem {
-    author: string;
-    comments: number;
-    contentType: string;
-    cover: string;
+    articleId: number;
+    articleName: string;
+    author: {
+      displayName: string;
+      ipLocation: string;
+      nickname: string;
+      userAvatar: string;
+      userId: number;
+      username: string;
+    };
+    commentCount: number;
     createdAt: string;
-    id: number;
-    title: string;
-    views: number;
+    images: Array<{
+      pictureUrl: string;
+    }>;
+    isAds: boolean;
+    isLiked: boolean;
+    likeCount: number;
+    targetUrl: null | string;
   }
 
   /** 文章列表响应数据 */
   export interface ArticleListData {
-    articles: ArticleItem[];
-    page: number;
-    pageSize: number;
-    total: number;
+    items: ArticleItem[];
+    randomSeed: number;
+    tip: string;
   }
 
   /** 文章列表响应 */
   export interface ArticleListResponse {
-    data: ArticleItem[];
+    data: ArticleListData;
     debugInfo?: string;
     errorCode?: string;
     message: string;
@@ -120,12 +130,11 @@ export namespace ArticleApi {
 export async function getArticleListApi(
   params: ArticleApi.ArticleListParams = {},
 ) {
-  const response = await requestClient.get<ArticleApi.ApiResponse<any>>(
+  const response = await requestClient.get<ArticleApi.ArticleListData>(
     '/api/articles',
     { params },
   );
-  // 根据API文档，返回的数据结构可能是对象，需要根据实际情况调整
-  return response.data.articles || response.data || []; // 返回实际的文章数据数组
+  return response.items; // 返回实际的文章数据数组
 }
 
 /**
