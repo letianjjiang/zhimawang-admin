@@ -141,20 +141,22 @@ export async function getArticleListApi(
  * 获取文章详情
  */
 export async function getArticleDetailApi(articleId: number) {
-  const response = await requestClient.get<
-    ArticleApi.ApiResponse<ArticleApi.ArticleDetail>
-  >(`/api/articles/${articleId}`);
-  return response.data; // 返回实际的文章详情数据
+  // requestClient 已通过默认拦截器与 responseReturn 解包 data 字段
+  const response = await requestClient.get<ArticleApi.ArticleDetail>(
+    `/api/articles/${articleId}`,
+  );
+  return response;
 }
 
 /**
  * 获取文章总浏览量（数据库基线 + Redis 增量）
  */
 export async function getArticleViewsApi(articleId: number) {
-  const response = await requestClient.get<
-    ArticleApi.ApiResponse<{ total: number }>
-  >(`/api/articles/${articleId}/views`);
-  return response.data; // 返回实际的浏览量数据
+  // 返回值已是 { total: number }
+  const response = await requestClient.get<{ total: number }>(
+    `/api/articles/${articleId}/views`,
+  );
+  return response;
 }
 
 /**

@@ -118,7 +118,7 @@ const handleEdit = (row: RowType) => {
 
 // 查看详情
 const handleViewDetail = (row: RowType) => {
-  drawerApi.setData({ data: row }).open();
+  drawerApi.setData({ articleId: row.articleId }).open();
 };
 
 // 删除
