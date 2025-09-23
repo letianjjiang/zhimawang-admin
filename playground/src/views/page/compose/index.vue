@@ -62,7 +62,9 @@ onMounted(fetchComposeAll);
         >
           <h3 style="margin: 0 0 8px">pageId={{ item.pageId }}</h3>
           <div v-if="item.error" style="color: #c0392b">{{ item.error }}</div>
-          <pre v-else class="p-3 overflow-auto bg-[#f7f7f7]">{{ JSON.stringify(item.data, null, 2) }}</pre>
+          <pre v-else class="overflow-auto bg-[#f7f7f7] p-3">{{
+            JSON.stringify(item.data, null, 2)
+          }}</pre>
         </div>
       </div>
     </div>
