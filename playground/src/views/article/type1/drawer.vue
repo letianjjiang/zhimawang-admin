@@ -4,7 +4,6 @@ import type { ArticleApi } from '#/api/core/article';
 import { ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
-import { getArticleDetailApi } from '#/api/core/article';
 
 import {
   Descriptions,
@@ -13,6 +12,8 @@ import {
   Image,
   Tag,
 } from 'ant-design-vue';
+
+import { getArticleDetailApi } from '#/api/core/article';
 
 const articleData = ref<ArticleApi.ArticleDetail | undefined>();
 const loading = ref(false);
@@ -80,8 +81,12 @@ async function fetchDetail(articleId: number) {
               class="h-12 w-12 rounded-full"
             />
             <div>
-            <div class="font-medium">
-                {{ articleData.author?.nickname || articleData.author?.username || '未知' }}
+              <div class="font-medium">
+                {{
+                  articleData.author?.nickname ||
+                  articleData.author?.username ||
+                  '未知'
+                }}
               </div>
               <div class="text-sm text-gray-500">
                 {{ articleData.author?.ipAddress || '未知' }}
@@ -116,7 +121,10 @@ async function fetchDetail(articleId: number) {
         <!-- 正文（HTML） -->
         <div v-if="articleData.articleContent">
           <h3 class="mb-3 text-lg font-semibold">正文</h3>
-          <div class="prose max-w-none" v-html="articleData.articleContent"></div>
+          <div
+            class="prose max-w-none"
+            v-html="articleData.articleContent"
+          ></div>
         </div>
       </div>
 
