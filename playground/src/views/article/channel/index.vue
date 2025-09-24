@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { ArticleApi } from '#/api/core/article';
 
 import { onMounted, ref } from 'vue';
@@ -7,12 +8,11 @@ import { Page } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
-import { getChannelListApi } from '#/api/core/article';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import { getChannelListApi } from '#/api/core/article';
 
 // 响应式数据
-const selectedPageId = ref<number | 'all'>('all');
+const selectedPageId = ref<'all' | number>('all');
 
 // 查看频道详情
 function viewChannelDetail(channel: ArticleApi.ChannelItem) {
@@ -20,7 +20,9 @@ function viewChannelDetail(channel: ArticleApi.ChannelItem) {
 }
 
 // 表格
-const [Grid, gridApi] = useVbenVxeGrid<ArticleApi.ChannelItem & { pageId?: number }>({
+const [Grid, gridApi] = useVbenVxeGrid<
+  ArticleApi.ChannelItem & { pageId?: number }
+>({
   class: 'flex-1',
   gridEvents: {
     // 可在此扩展事件
@@ -73,7 +75,13 @@ const [Grid, gridApi] = useVbenVxeGrid<ArticleApi.ChannelItem & { pageId?: numbe
           name: 'CellOperation',
           options: [{ code: 'view', text: '查看详情' }],
           attrs: {
-            onClick: ({ code, row }: { code: string; row: ArticleApi.ChannelItem }) => {
+            onClick: ({
+              code,
+              row,
+            }: {
+              code: string;
+              row: ArticleApi.ChannelItem;
+            }) => {
               if (code === 'view') {
                 viewChannelDetail(row);
               }
@@ -90,7 +98,10 @@ const [Grid, gridApi] = useVbenVxeGrid<ArticleApi.ChannelItem & { pageId?: numbe
             return list.map((item) => ({ ...item, pageId }));
           }
           if (selectedPageId.value === 'all') {
-            const [xhs, lxq] = await Promise.all([fetchByPage(4), fetchByPage(5)]);
+            const [xhs, lxq] = await Promise.all([
+              fetchByPage(4),
+              fetchByPage(5),
+            ]);
             return [...xhs, ...lxq];
           }
           return await fetchByPage(selectedPageId.value as number);
@@ -124,7 +135,7 @@ onMounted(() => {
       {{ $t('article.channel.list.title') }}
     </template>
 
-    <div class="p-4 h-full flex flex-col">
+    <div class="flex h-full flex-col p-4">
       <!-- 顶部筛选与刷新区域已移除 -->
 
       <!-- Vben VXE 表格 -->
