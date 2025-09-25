@@ -34,10 +34,30 @@ const gridOptions: VxeGridProps<RowType> = {
       showOverflow: 'tooltip',
     },
     {
-      field: 'author',
-      slots: { default: 'author' },
-      title: '作者',
-      width: 120,
+      field: 'author.userAvatar',
+      slots: { default: 'userAvatar' },
+      title: '头像',
+      width: 80,
+    },
+    {
+      field: 'author.nickname',
+      title: '昵称',
+      width: 100,
+    },
+    {
+      field: 'author.username',
+      title: '用户名',
+      width: 100,
+    },
+    {
+      field: 'author.userId',
+      title: '用户ID',
+      width: 80,
+    },
+    {
+      field: 'author.ipLocation',
+      title: 'IP位置',
+      width: 100,
     },
     {
       field: 'articleId',
@@ -152,21 +172,19 @@ const handleDelete = (row: RowType) => {
           </div>
         </template>
 
-        <template #author="{ row }">
-          <div class="flex items-center">
-            <img
-              :src="row.author.userAvatar"
-              :alt="row.author.displayName"
-              class="mr-2 h-6 w-6 rounded-full"
-            />
-            <div>
-              <div class="text-sm font-medium">
-                {{ row.author.displayName }}
-              </div>
-              <div class="text-xs text-gray-500">
-                {{ row.author.ipLocation }}
-              </div>
-            </div>
+        <template #userAvatar="{ row }">
+          <Image
+            v-if="row.author && row.author.userAvatar"
+            :src="row.author.userAvatar"
+            height="40"
+            width="40"
+            class="rounded"
+          />
+          <div
+            v-else
+            class="flex h-10 w-10 items-center justify-center rounded bg-gray-200 text-xs text-gray-400"
+          >
+            无头像
           </div>
         </template>
 
