@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { ArticleApi } from '#/api/core/article';
+import { ref } from 'vue';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
+import { useAccessStore } from '@vben/stores';
 
 import { Button, Image, message, Tag } from 'ant-design-vue';
 
@@ -10,8 +12,52 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getArticleListApi } from '#/api/core/article';
 
 import ExtraDrawer from './drawer.vue';
+import ViewCountCell from './ViewCountCell.vue';
 
-interface RowType extends ArticleApi.ArticleItem {}
+interface RowType extends ArticleApi.ArticleItem {
+  viewCount?: number;
+}
+
+const accessStore = useAccessStore();
+const viewCountCache = ref<Record<number, number>>({});
+
+// 获取单篇文章浏览量
+const fetchViewCount = async (articleId: number): Promise<number> => {
+  // 检查缓存
+  if (viewCountCache.value[articleId] !== undefined) {
+    return viewCountCache.value[articleId];
+  }
+
+  try {
+    const token = accessStore.accessToken;
+    if (!token) {
+      return 0;
+    }
+
+    const response = await fetch(`http://duducar.cloud:8888/api/articles/${articleId}/views`, {
+      method: 'GET',
+      headers: {
+        'accept': '*/*',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    
+    if (!response.ok) {
+      console.error(`获取文章${articleId}浏览量失败:`, response.statusText);
+      return 0;
+    }
+    
+    const data = await response.json();
+    const viewCount = data?.data?.total || 0;
+    
+    // 缓存结果
+    viewCountCache.value[articleId] = viewCount;
+    return viewCount;
+  } catch (error) {
+    console.error(`获取文章${articleId}浏览量失败:`, error);
+    return 0;
+  }
+};
 
 const gridOptions: VxeGridProps<RowType> = {
   columns: [
@@ -79,6 +125,12 @@ const gridOptions: VxeGridProps<RowType> = {
       field: 'commentCount',
       title: '评论数',
       width: 80,
+    },
+    {
+      field: 'viewCount',
+      slots: { default: 'viewCount' },
+      title: '浏览量',
+      width: 100,
     },
     {
       field: 'isAds',
@@ -192,6 +244,10 @@ const handleDelete = (row: RowType) => {
           <Tag :color="row.isLiked ? 'red' : 'default'">
             {{ row.isLiked ? '已赞' : '未赞' }}
           </Tag>
+        </template>
+
+        <template #viewCount="{ row }">
+          <ViewCountCell :articleId="row.articleId" :fetchViewCount="fetchViewCount" />
         </template>
 
         <template #ads="{ row }">

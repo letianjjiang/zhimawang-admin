@@ -12,6 +12,40 @@ const sessions = ref<UserSessionApi.SessionInfo[]>([]);
 const loading = ref(false);
 const error = ref('');
 
+// 表格列定义
+const columns = [
+  {
+    title: '设备信息',
+    key: 'device',
+    width: 200,
+  },
+  {
+    title: '会话ID',
+    key: 'session_id',
+    width: 150,
+  },
+  {
+    title: '创建时间',
+    key: 'created_at',
+    width: 160,
+  },
+  {
+    title: '最后活跃',
+    key: 'last_seen_at',
+    width: 160,
+  },
+  {
+    title: '首次IP',
+    key: 'ip_first',
+    width: 120,
+  },
+  {
+    title: '最后IP',
+    key: 'ip_last',
+    width: 120,
+  },
+];
+
 // 获取会话数据
 const fetchSessions = async () => {
   try {
@@ -69,9 +103,14 @@ onMounted(() => {
 
 <template>
   <div class="p-6">
-    <div class="mb-6">
-      <h1 class="mb-2 text-2xl font-bold text-gray-900">用户会话管理</h1>
-      <p class="text-gray-600">查看和管理用户登录会话信息</p>
+    <div class="mb-6 flex items-center justify-between">
+      <div>
+        <h1 class="mb-2 text-2xl font-bold text-gray-900">用户会话管理</h1>
+        <p class="text-gray-600">查看和管理用户登录会话信息</p>
+      </div>
+      <a-button @click="fetchSessions" :loading="loading" type="primary">
+        刷新数据
+      </a-button>
     </div>
 
     <div v-if="loading" class="flex items-center justify-center py-8">
@@ -87,87 +126,50 @@ onMounted(() => {
       <a-empty description="暂无会话数据" />
     </div>
 
-    <div v-else class="space-y-4">
-      <div
-        v-for="session in sessions"
-        :key="session.session_id"
-        class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+    <div v-else class="bg-white rounded-lg shadow-sm">
+      <a-table
+        :columns="columns"
+        :data-source="sessions"
+        :loading="loading"
+        :pagination="{ pageSize: 10, showSizeChanger: true, showQuickJumper: true }"
+        row-key="session_id"
+        size="middle"
       >
-        <div class="mb-4 flex items-start justify-between">
-          <div class="flex items-center space-x-3">
-            <div
-              class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100"
-            >
-              <span class="text-sm font-semibold text-blue-600">
-                {{ session.device_type?.charAt(0)?.toUpperCase() || 'D' }}
-              </span>
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'device'">
+            <div class="flex items-center space-x-3">
+              <div class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
+                <span class="text-xs font-semibold text-blue-600">
+                  {{ record.device_type?.charAt(0)?.toUpperCase() || 'D' }}
+                </span>
+              </div>
+              <div>
+                <div class="font-medium text-gray-900">
+                  {{ record.device_name || '未知设备' }}
+                </div>
+                <div class="text-sm text-gray-500">
+                  <a-tag color="blue" size="small">{{ record.device_type }}</a-tag>
+                </div>
+              </div>
             </div>
-            <div>
-              <h3 class="text-lg font-semibold text-gray-900">
-                {{ session.device_name || '未知设备' }}
-              </h3>
-              <p class="text-sm text-gray-500">
-                设备类型: {{ session.device_type }} | 会话ID:
-                {{ session.session_id }}
-              </p>
-            </div>
-          </div>
-          <div class="flex items-center space-x-2">
-            <a-tag color="blue">{{ session.device_type }}</a-tag>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
-          <div class="space-y-2">
-            <div class="flex justify-between">
-              <span class="text-gray-500">会话ID:</span>
-              <span class="font-mono text-gray-900">{{
-                session.session_id
-              }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-gray-500">设备名称:</span>
-              <span class="text-gray-900">{{
-                session.device_name || '未知设备'
-              }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-gray-500">创建时间:</span>
-              <span class="text-gray-900">{{
-                formatDateTime(session.created_at)
-              }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-gray-500">最后活跃:</span>
-              <span class="text-gray-900">{{
-                formatDateTime(session.last_seen_at)
-              }}</span>
-            </div>
-          </div>
-          <div class="space-y-2">
-            <div class="flex justify-between">
-              <span class="text-gray-500">首次IP:</span>
-              <span class="font-mono text-gray-900">{{
-                session.ip_first
-              }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-gray-500">最后IP:</span>
-              <span class="font-mono text-gray-900">{{ session.ip_last }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-gray-500">设备类型:</span>
-              <span class="text-gray-900">{{ session.device_type }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="mt-6 text-center">
-      <a-button @click="fetchSessions" :loading="loading" type="primary">
-        刷新数据
-      </a-button>
+          </template>
+          <template v-else-if="column.key === 'session_id'">
+            <span class="font-mono text-sm">{{ record.session_id }}</span>
+          </template>
+          <template v-else-if="column.key === 'created_at'">
+            <span class="text-sm">{{ formatDateTime(record.created_at) }}</span>
+          </template>
+          <template v-else-if="column.key === 'last_seen_at'">
+            <span class="text-sm">{{ formatDateTime(record.last_seen_at) }}</span>
+          </template>
+          <template v-else-if="column.key === 'ip_first'">
+            <span class="font-mono text-sm">{{ record.ip_first }}</span>
+          </template>
+          <template v-else-if="column.key === 'ip_last'">
+            <span class="font-mono text-sm">{{ record.ip_last }}</span>
+          </template>
+        </template>
+      </a-table>
     </div>
   </div>
 </template>
