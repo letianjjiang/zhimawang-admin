@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 
 interface Props {
   articleId: number;
@@ -29,6 +29,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <span v-if="loading" class="text-gray-400 text-sm">加载中...</span>
+  <span v-if="loading" class="text-sm text-gray-400">加载中...</span>
   <span v-else class="text-gray-700">{{ viewCount.toLocaleString() }}</span>
 </template>

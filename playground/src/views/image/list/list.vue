@@ -1,30 +1,32 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
+
 import { onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { Image, Tag } from 'ant-design-vue';
 import { useAccessStore } from '@vben/stores';
+
+import { Image, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
 interface ImageItem {
-  filename: string;
   category: string;
+  filename: string;
   fullPath: string;
 }
 
 interface ImageListResponse {
-  status: string;
-  message: string;
   data: {
     advertisements: string[];
+    avatar: string[];
     chatsImg: string[];
     common: string[];
-    avatar: string[];
   };
-  errorCode: null | string;
   debugInfo: null | string;
+  errorCode: null | string;
+  message: string;
+  status: string;
 }
 
 const loading = ref(false);
@@ -39,23 +41,26 @@ const fetchImageList = async () => {
       throw new Error('未找到访问令牌，请重新登录');
     }
 
-    const response = await fetch('http://duducar.cloud:8888/api/cos/image/list', {
-      method: 'GET',
-      headers: {
-        'accept': '*/*',
-        'Authorization': `Bearer ${token}`,
+    const response = await fetch(
+      'http://duducar.cloud:8888/api/cos/image/list',
+      {
+        method: 'GET',
+        headers: {
+          accept: '*/*',
+          Authorization: `Bearer ${token}`,
+        },
       },
-    });
-    
+    );
+
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
-    
+
     const result: ImageListResponse = await response.json();
-    
+
     // 将分类的图片数据转换为表格数据
     const images: ImageItem[] = [];
-    
+
     Object.entries(result.data).forEach(([category, files]) => {
       files.forEach((filename: string) => {
         images.push({
@@ -65,9 +70,9 @@ const fetchImageList = async () => {
         });
       });
     });
-    
+
     tableData.value = images;
-    
+
     return {
       items: images,
       total: images.length,
@@ -135,31 +140,6 @@ onMounted(() => {
 });
 </script>
 
-<template>
-  <Page auto-content-height>
-    <div class="p-4">
-      <h1 class="mb-6 text-2xl font-bold">图片列表</h1>
-      
-      <Grid>
-        <template #image="{ row }">
-          <Image
-            :src="row.fullPath"
-            height="60"
-            width="60"
-            class="rounded"
-          />
-        </template>
-
-        <template #category="{ row }">
-          <Tag :color="getCategoryColor(row.category)">
-            {{ getCategoryLabel(row.category) }}
-          </Tag>
-        </template>
-      </Grid>
-    </div>
-  </Page>
-</template>
-
 <script lang="ts">
 function getCategoryColor(category: string): string {
   const colorMap: Record<string, string> = {
@@ -181,3 +161,23 @@ function getCategoryLabel(category: string): string {
   return labelMap[category] || category;
 }
 </script>
+
+<template>
+  <Page auto-content-height>
+    <div class="p-4">
+      <h1 class="mb-6 text-2xl font-bold">图片列表</h1>
+
+      <Grid>
+        <template #image="{ row }">
+          <Image :src="row.fullPath" height="60" width="60" class="rounded" />
+        </template>
+
+        <template #category="{ row }">
+          <Tag :color="getCategoryColor(row.category)">
+            {{ getCategoryLabel(row.category) }}
+          </Tag>
+        </template>
+      </Grid>
+    </div>
+  </Page>
+</template>

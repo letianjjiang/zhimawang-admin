@@ -126,19 +126,25 @@ onMounted(() => {
       <a-empty description="暂无会话数据" />
     </div>
 
-    <div v-else class="bg-white rounded-lg shadow-sm">
+    <div v-else class="rounded-lg bg-white shadow-sm">
       <a-table
         :columns="columns"
         :data-source="sessions"
         :loading="loading"
-        :pagination="{ pageSize: 10, showSizeChanger: true, showQuickJumper: true }"
+        :pagination="{
+          pageSize: 10,
+          showSizeChanger: true,
+          showQuickJumper: true,
+        }"
         row-key="session_id"
         size="middle"
       >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'device'">
             <div class="flex items-center space-x-3">
-              <div class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
+              <div
+                class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100"
+              >
                 <span class="text-xs font-semibold text-blue-600">
                   {{ record.device_type?.charAt(0)?.toUpperCase() || 'D' }}
                 </span>
@@ -148,7 +154,9 @@ onMounted(() => {
                   {{ record.device_name || '未知设备' }}
                 </div>
                 <div class="text-sm text-gray-500">
-                  <a-tag color="blue" size="small">{{ record.device_type }}</a-tag>
+                  <a-tag color="blue" size="small">
+                    {{ record.device_type }}
+                  </a-tag>
                 </div>
               </div>
             </div>
@@ -160,7 +168,9 @@ onMounted(() => {
             <span class="text-sm">{{ formatDateTime(record.created_at) }}</span>
           </template>
           <template v-else-if="column.key === 'last_seen_at'">
-            <span class="text-sm">{{ formatDateTime(record.last_seen_at) }}</span>
+            <span class="text-sm">{{
+              formatDateTime(record.last_seen_at)
+            }}</span>
           </template>
           <template v-else-if="column.key === 'ip_first'">
             <span class="font-mono text-sm">{{ record.ip_first }}</span>

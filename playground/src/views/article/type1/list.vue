@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { ArticleApi } from '#/api/core/article';
+
 import { ref } from 'vue';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
@@ -34,22 +35,25 @@ const fetchViewCount = async (articleId: number): Promise<number> => {
       return 0;
     }
 
-    const response = await fetch(`http://duducar.cloud:8888/api/articles/${articleId}/views`, {
-      method: 'GET',
-      headers: {
-        'accept': '*/*',
-        'Authorization': `Bearer ${token}`,
+    const response = await fetch(
+      `http://duducar.cloud:8888/api/articles/${articleId}/views`,
+      {
+        method: 'GET',
+        headers: {
+          accept: '*/*',
+          Authorization: `Bearer ${token}`,
+        },
       },
-    });
-    
+    );
+
     if (!response.ok) {
       console.error(`获取文章${articleId}浏览量失败:`, response.statusText);
       return 0;
     }
-    
+
     const data = await response.json();
     const viewCount = data?.data?.total || 0;
-    
+
     // 缓存结果
     viewCountCache.value[articleId] = viewCount;
     return viewCount;
@@ -247,7 +251,10 @@ const handleDelete = (row: RowType) => {
         </template>
 
         <template #viewCount="{ row }">
-          <ViewCountCell :articleId="row.articleId" :fetchViewCount="fetchViewCount" />
+          <ViewCountCell
+            :article-id="row.articleId"
+            :fetch-view-count="fetchViewCount"
+          />
         </template>
 
         <template #ads="{ row }">

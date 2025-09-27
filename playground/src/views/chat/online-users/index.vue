@@ -2,47 +2,51 @@
 import { onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { Card, Spin, Tag } from 'ant-design-vue';
 import { useAccessStore } from '@vben/stores';
 
+import { Card, Spin, Tag } from 'ant-design-vue';
+
 interface OnlineUsersResponse {
-  currentUserId: number;
-  success: boolean;
   count: number;
+  currentUserId: number;
   onlineUsers: number[];
+  success: boolean;
 }
 
 const loading = ref(false);
-const onlineUsersData = ref<OnlineUsersResponse | null>(null);
-const error = ref<string | null>(null);
+const onlineUsersData = ref<null | OnlineUsersResponse>(null);
+const error = ref<null | string>(null);
 const accessStore = useAccessStore();
 
 const fetchOnlineUsers = async () => {
   loading.value = true;
   error.value = null;
-  
+
   try {
     const token = accessStore.accessToken;
     if (!token) {
       throw new Error('未找到访问令牌，请重新登录');
     }
 
-    const response = await fetch('http://duducar.cloud:8888/api/v2/chat/online-users', {
-      method: 'GET',
-      headers: {
-        'accept': '*/*',
-        'Authorization': `Bearer ${token}`,
+    const response = await fetch(
+      'http://duducar.cloud:8888/api/v2/chat/online-users',
+      {
+        method: 'GET',
+        headers: {
+          accept: '*/*',
+          Authorization: `Bearer ${token}`,
+        },
       },
-    });
-    
+    );
+
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
-    
+
     const data: OnlineUsersResponse = await response.json();
     onlineUsersData.value = data;
-  } catch (err) {
-    error.value = err instanceof Error ? err.message : '获取在线用户失败';
+  } catch (error_) {
+    error.value = error_ instanceof Error ? error_.message : '获取在线用户失败';
   } finally {
     loading.value = false;
   }
@@ -71,7 +75,10 @@ onMounted(() => {
         <Spin size="large" />
       </div>
 
-      <div v-else-if="error" class="rounded-lg border border-red-200 bg-red-50 p-4">
+      <div
+        v-else-if="error"
+        class="rounded-lg border border-red-200 bg-red-50 p-4"
+      >
         <p class="text-red-600">{{ error }}</p>
       </div>
 
@@ -108,13 +115,19 @@ onMounted(() => {
               class="flex items-center justify-between rounded-lg border border-gray-200 p-3"
             >
               <div class="flex items-center">
-                <div class="mr-3 h-8 w-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm">
+                <div
+                  class="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 text-sm text-white"
+                >
                   {{ userId.toString().slice(-2) }}
                 </div>
                 <div>
                   <div class="font-medium">用户 {{ userId }}</div>
                   <div class="text-sm text-gray-500">
-                    {{ userId === onlineUsersData.currentUserId ? '(当前用户)' : '在线' }}
+                    {{
+                      userId === onlineUsersData.currentUserId
+                        ? '(当前用户)'
+                        : '在线'
+                    }}
                   </div>
                 </div>
               </div>
@@ -124,9 +137,7 @@ onMounted(() => {
               </div>
             </div>
           </div>
-          <div v-else class="py-8 text-center text-gray-500">
-            暂无在线用户
-          </div>
+          <div v-else class="py-8 text-center text-gray-500">暂无在线用户</div>
         </Card>
       </div>
 
