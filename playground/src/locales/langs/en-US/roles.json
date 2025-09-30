@@ -1,0 +1,12 @@
+{
+  "title": "Roles Management",
+  "users": {
+    "title": "Role Users"
+  },
+  "list": {
+    "title": "Role List"
+  },
+  "channels": {
+    "title": "Role Channels"
+  }
+}

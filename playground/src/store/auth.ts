@@ -11,6 +11,7 @@ import { notification } from 'ant-design-vue';
 import { defineStore } from 'pinia';
 
 import { getAccessCodesApi, getUserInfoApi, loginApi, logoutApi } from '#/api';
+import type { AuthApi } from '#/api/core/auth';
 import { $t } from '#/locales';
 
 export const useAuthStore = defineStore('auth', () => {
@@ -34,7 +35,7 @@ export const useAuthStore = defineStore('auth', () => {
     let userInfo: null | UserInfo = null;
     try {
       loginLoading.value = true;
-      const response = await loginApi(params);
+      const response = await loginApi(params as AuthApi.LoginParams);
 
       // 如果成功获取到 token
       if (response.accessToken) {

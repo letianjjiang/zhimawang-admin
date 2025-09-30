@@ -1,55 +1,82 @@
-import type { Recordable } from '@vben/types';
-
 import { requestClient } from '#/api/request';
 
 export namespace SystemRoleApi {
   export interface SystemRole {
-    [key: string]: any;
-    id: string;
+    id?: number;
     name: string;
-    permissions: string[];
-    remark?: string;
-    status: 0 | 1;
+    code: string;
+    description?: string;
+    status: number;
+    permissions?: number[];
+    created_at?: string;
+    updated_at?: string;
+  }
+
+  export interface RoleListParams {
+    page?: number;
+    pageSize?: number;
+    name?: string;
+    code?: string;
+    status?: number;
   }
 }
 
 /**
- * 获取角色列表数据
+ * 获取系统角色列表
  */
-async function getRoleList(params: Recordable<any>) {
-  return requestClient.get<Array<SystemRoleApi.SystemRole>>(
-    '/system/role/list',
+export async function getSystemRolesApi(
+  params: SystemRoleApi.RoleListParams = {},
+) {
+  return requestClient.get<SystemRoleApi.SystemRole[]>(
+    '/api/admin/system/roles',
     { params },
   );
 }
 
 /**
- * 创建角色
- * @param data 角色数据
+ * 获取角色列表（用于表格组件）
  */
-async function createRole(data: Omit<SystemRoleApi.SystemRole, 'id'>) {
-  return requestClient.post('/system/role', data);
-}
-
-/**
- * 更新角色
- *
- * @param id 角色 ID
- * @param data 角色数据
- */
-async function updateRole(
-  id: string,
-  data: Omit<SystemRoleApi.SystemRole, 'id'>,
+export async function getRoleList(
+  params: SystemRoleApi.RoleListParams = {},
 ) {
-  return requestClient.put(`/system/role/${id}`, data);
+  const result = await getSystemRolesApi(params);
+  return {
+    items: result,
+    total: result.length,
+  };
 }
 
 /**
- * 删除角色
- * @param id 角色 ID
+ * 创建系统角色
  */
-async function deleteRole(id: string) {
-  return requestClient.delete(`/system/role/${id}`);
+export async function createRole(
+  data: Omit<SystemRoleApi.SystemRole, 'id' | 'created_at' | 'updated_at'>,
+) {
+  return requestClient.post('/api/admin/system/roles', data);
 }
 
-export { createRole, deleteRole, getRoleList, updateRole };
+/**
+ * 更新系统角色
+ */
+export async function updateRole(
+  id: number,
+  data: Omit<SystemRoleApi.SystemRole, 'id' | 'created_at' | 'updated_at'>,
+) {
+  return requestClient.put(`/api/admin/system/roles/${id}`, data);
+}
+
+/**
+ * 删除系统角色
+ */
+export async function deleteRole(id: number) {
+  return requestClient.delete(`/api/admin/system/roles/${id}`);
+}
+
+/**
+ * 获取角色详情
+ */
+export async function getRoleDetailApi(id: number) {
+  return requestClient.get<SystemRoleApi.SystemRole>(
+    `/api/admin/system/roles/${id}`,
+  );
+}

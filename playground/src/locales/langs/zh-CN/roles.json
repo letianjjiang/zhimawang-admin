@@ -1,0 +1,12 @@
+{
+  "title": "角色管理",
+  "users": {
+    "title": "角色用户"
+  },
+  "list": {
+    "title": "角色列表"
+  },
+  "channels": {
+    "title": "角色频道"
+  }
+}
