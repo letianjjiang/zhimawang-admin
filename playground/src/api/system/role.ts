@@ -2,21 +2,21 @@ import { requestClient } from '#/api/request';
 
 export namespace SystemRoleApi {
   export interface SystemRole {
+    code: string;
+    created_at?: string;
+    description?: string;
     id?: number;
     name: string;
-    code: string;
-    description?: string;
-    status: number;
     permissions?: number[];
-    created_at?: string;
+    status: number;
     updated_at?: string;
   }
 
   export interface RoleListParams {
+    code?: string;
+    name?: string;
     page?: number;
     pageSize?: number;
-    name?: string;
-    code?: string;
     status?: number;
   }
 }
@@ -36,9 +36,7 @@ export async function getSystemRolesApi(
 /**
  * 获取角色列表（用于表格组件）
  */
-export async function getRoleList(
-  params: SystemRoleApi.RoleListParams = {},
-) {
+export async function getRoleList(params: SystemRoleApi.RoleListParams = {}) {
   const result = await getSystemRolesApi(params);
   return {
     items: result,
@@ -50,7 +48,7 @@ export async function getRoleList(
  * 创建系统角色
  */
 export async function createRole(
-  data: Omit<SystemRoleApi.SystemRole, 'id' | 'created_at' | 'updated_at'>,
+  data: Omit<SystemRoleApi.SystemRole, 'created_at' | 'id' | 'updated_at'>,
 ) {
   return requestClient.post('/api/admin/system/roles', data);
 }
@@ -60,7 +58,7 @@ export async function createRole(
  */
 export async function updateRole(
   id: number,
-  data: Omit<SystemRoleApi.SystemRole, 'id' | 'created_at' | 'updated_at'>,
+  data: Omit<SystemRoleApi.SystemRole, 'created_at' | 'id' | 'updated_at'>,
 ) {
   return requestClient.put(`/api/admin/system/roles/${id}`, data);
 }

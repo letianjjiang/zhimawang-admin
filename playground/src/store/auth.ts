@@ -1,5 +1,7 @@
 import type { Recordable, UserInfo } from '@vben/types';
 
+import type { AuthApi } from '#/api/core/auth';
+
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -11,7 +13,6 @@ import { notification } from 'ant-design-vue';
 import { defineStore } from 'pinia';
 
 import { getAccessCodesApi, getUserInfoApi, loginApi, logoutApi } from '#/api';
-import type { AuthApi } from '#/api/core/auth';
 import { $t } from '#/locales';
 
 export const useAuthStore = defineStore('auth', () => {
